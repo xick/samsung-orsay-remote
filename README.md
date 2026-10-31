@@ -8,6 +8,10 @@ running: copy the app to the root USB stick, root the TV, and open
 Tested on a **Samsung UE48J5248** (J5200 family, 2015, firmware
 `T-N14MJDEUC-1150.0`) rooted with the SamyGO **H "Network" root**.
 
+<p align="center">
+  <img src="screenshot.png" alt="The web remote interface" width="340">
+</p>
+
 > **Rooting is unofficial and can brick the TV.** Read
 > [ROOT-PLAN.md](ROOT-PLAN.md) before you start. The root lives on a USB stick
 > that must stay plugged in.
