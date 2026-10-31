@@ -1,0 +1,67 @@
+#!/mnt/bin/busybox sh
+# 01_10_block_updates.init
+#
+# Block Samsung firmware-update (OTN) and Smart Hub widget-sync endpoints by
+# blackholing the IPs their DNS names currently resolve to.
+#
+# No kernel modules, no bind mounts: only the routing table is touched.
+# Reversible: reboot, or: ip route del blackhole <ip>/32
+#
+# Install: /mnt/etc/init.d/01_10_block_updates.init (mode 755)
+# Log:     /dtv/block_updates.log
+# Disable: rename to 01_10_block_updates.init.dis
+
+. /dtv/SGO.env 2>/dev/null
+
+SYSROOT="${SYSROOT:-/mnt}"
+BB="$SYSROOT/bin/busybox"
+LOG="/dtv/block_updates.log"
+
+DOMAINS="
+samsungotn.net
+www.samsungotn.net
+test.samsungotn.net
+otn.samsungotn.net
+otn.samsungcloudcdn.com
+samsungcloudsolution.net
+www.samsungcloudsolution.net
+osb-apps.samsungqbe.com
+osb-v2.samsungqbe.com
+msecnd.net
+www.msecnd.net
+vo.msecnd.net
+"
+
+apply() {
+    for d in $DOMAINS; do
+        ips=$("$BB" timeout -t 5 "$BB" nslookup "$d" 2>/dev/null \
+              | "$BB" awk '/^Name:/{f=1;next} f && /^Address [0-9]+:/{print $3}' \
+              | "$BB" grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
+        if [ -z "$ips" ]; then
+            echo "$("$BB" date) $d: no A record" >> "$LOG"
+            continue
+        fi
+        for ip in $ips; do
+            case "$ip" in
+                0.*|127.*|10.*|192.168.*|172.1[6-9].*|172.2[0-9].*|172.3[01].*) continue ;;
+            esac
+            "$BB" ip route add blackhole "$ip/32" 2>/dev/null
+            echo "$("$BB" date) blackhole $ip ($d)" >> "$LOG"
+        done
+    done
+}
+
+case "$1" in
+start)
+    # Wait up to 60 s for the network/default route at boot.
+    n=0
+    while [ "$n" -lt 30 ]; do
+        "$BB" ip route | "$BB" grep -q '^default ' && break
+        "$BB" sleep 2
+        n=$((n + 1))
+    done
+
+    apply
+    "$BB" sync
+    ;;
+esac

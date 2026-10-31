@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<ThumbIcon>icon/samygo_106.png</ThumbIcon> 
+	<BigThumbIcon>icon/samygo_115.png</BigThumbIcon> 
+	<ListIcon>icon/samygo_85.png</ListIcon> 
+	<BigListIcon>icon/samygo_95.png</BigListIcon> 
+	<cpauthjs></cpauthjs>
+	<ver>2.1.1</ver>
+	<mgrver>1.000</mgrver>
+	<fullwidget>n</fullwidget>
+	<srcctl>n</srcctl>
+	<ticker>n</ticker>
+	<childlock>n</childlock>
+	<audiomute>n</audiomute>
+	<videomute>n</videomute>
+	<dcont>y</dcont>
+	<network>n</network>
+	<hubsite>n</hubsite>
+	<widgetname>InstallSamyGO-H</widgetname>
+	<description>InstallSamyGO for H series</description>
+	<width>1280</width>
+	<height>720</height>
+	<author>
+		<name>sectroyer</name>
+		<email>sectroyer@shit.com</email>
+		<organization>www.samygo.tv</organization>
+	</author>
+</widget>
